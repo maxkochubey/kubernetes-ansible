@@ -53,7 +53,7 @@
 
 - name: Check if etcd key already exists
   stat:
-    path: "{{ kube.master_cert_dir }}/etcd-key.pem"
+    path: "{{ etcd.ssl_key_file }}"
   register: etcd_key_stat
 
 - name: Create etcd certificate
@@ -61,6 +61,6 @@
   register: etcd_cert
   command: "{{ item }}"
   with_items:
-    - "openssl genrsa -out {{ kube.master_cert_dir }}/etcd-key.pem 2048"
-    - "openssl req -new -key {{ kube.master_cert_dir }}/etcd-key.pem -out {{ kube.master_cert_dir }}/etcd.csr -subj '/CN=Etcd-server' -config {{ kube.master_cert_dir }}/openssl-etcd.conf"
-    - "openssl x509 -req -in {{ kube.master_cert_dir }}/etcd.csr -CA {{ kube.master_cert_dir }}/ca.pem -CAkey {{ kube.master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ kube.master_cert_dir }}/etcd.pem -days 3666 -extensions v3_req -extfile {{ kube.master_cert_dir }}/openssl-etcd.conf"
+    - "openssl genrsa -out {{ etcd.ssl_key_file }} 2048"
+    - "openssl req -new -key {{ etcd.ssl_key_file }} -out {{ kube.master_cert_dir }}/etcd.csr -subj '/CN=Etcd-server' -config {{ kube.master_cert_dir }}/openssl-etcd.conf"
+    - "openssl x509 -req -in {{ kube.master_cert_dir }}/etcd.csr -CA {{ kube.master_cert_dir }}/ca.pem -CAkey {{ kube.master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ etcd.ssl_cert_file }} -days 3666 -extensions v3_req -extfile {{ kube.master_cert_dir }}/openssl-etcd.conf"
