@@ -1,6 +1,6 @@
 {% macro etcd_cluster() -%}
 {% for node in groups['etcd'] -%}
-  {{ etcd_peer_url_scheme }}://{{ node }}:2379
+  {{ etcd.peer_url_scheme }}://{{ node }}:2379
   {%- if not loop.last -%},{%- endif -%}
 {%- endfor -%}
 {% endmacro -%}
