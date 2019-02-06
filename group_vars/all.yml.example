@@ -10,6 +10,10 @@ kube:
   master_cert_dir: /opt/kubernetes/pki
   flannel_dir: /etc/sysconfig
   admin_config: "{{ kube.config_dir }}/kubeadminconfig"
+  # Cluster service ip range
+  service_subnet: 10.96.0.0/24
+  # IP of default kubernetes service, it is the first IP of service network CIDR range
+  service_ip: 10.96.0.1
 
 #- image and other variable
 api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.12.4
@@ -17,10 +21,6 @@ controller_image: gcr.io/google_containers/kube-controller-manager-amd64:v1.12.4
 scheduler_image: gcr.io/google_containers/kube-scheduler-amd64:v1.12.4
 kube_proxy_image: gcr.io/google_containers/kube-proxy-amd64:v1.12.4
 etcd_image: k8s.gcr.io/etcd:3.2.24
-
-#- cluster service ip range
-service_ip_range: 10.96.0.0/24
-kubernetes_service_ip: 10.96.0.1  #- IP of default kubernetes service, it is the first IP of network CIDR range
 
 #- all certifactes for cluster  
 ca_cert: /etc/kubernetes/pki/ca.pem
@@ -64,7 +64,7 @@ kube_proxy: true # set true only if cluster is fully operation and running
 #- kube-dns add-on
 kube_dns: true # set true only if cluster is fully operation and running
 #- if true then set following
-dns_ip: 10.96.0.10 # it should be from cluster service_ip_range
+dns_ip: 10.96.0.10	# IP-address should be from {{ kube.service_subnet }} range
 dns_replicas: 1
 
 #flannel network # only one network plugin should be enable either weave or flannel

@@ -42,9 +42,9 @@ spec:
     - --requestheader-username-headers=X-Remote-User
     - --secure-port={{ kube_api.secure_port }}
     - --service-account-key-file=/etc/kubernetes/pki/apiserver-key.pem
-    - --service-cluster-ip-range={{ service_ip_range }}
     - --tls-cert-file=/etc/kubernetes/pki/apiserver.pem
     - --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
+    - --service-cluster-ip-range={{ kube.service_subnet }}
     image: {{ api_image }}
     imagePullPolicy: IfNotPresent
     livenessProbe:
