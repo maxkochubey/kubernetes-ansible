@@ -19,12 +19,12 @@ spec:
   - command:
     - etcd
     - --advertise-client-urls={{ etcd_advertise_client_urls }}
-    - --cert-file=/etc/kubernetes/pki/etcd.pem
+    - --cert-file={{ kube.cert_dir }}/etcd.pem
     - --client-cert-auth=true
-    - --data-dir=/var/lib/etcd
+    - --data-dir={{ etcd.data_dir }}
     - --initial-advertise-peer-urls={{ etcd_initial_advertise_peer_urls }}
     - --initial-cluster={{ initial_cluster() }}
-    - --key-file=/etc/kubernetes/pki/etcd-key.pem
+    - --key-file={{ kube.cert_dir }}/etcd-key.pem
     - --listen-client-urls={{ etcd_listen_client_urls }}
     - --listen-peer-urls={{ etcd_listen_peer_urls }}
 {% if groups[etcd_peers_group] and groups[etcd_peers_group] | length > 0 %}
@@ -32,12 +32,12 @@ spec:
 {% else %}
     - --name=default
 {% endif %}
-    - --peer-cert-file=/etc/kubernetes/pki/etcd.pem
+    - --peer-cert-file={{ kube.cert_dir }}/etcd.pem
     - --peer-client-cert-auth=true
-    - --peer-key-file=/etc/kubernetes/pki/etcd-key.pem
-    - --peer-trusted-ca-file=/etc/kubernetes/pki/ca.pem
+    - --peer-key-file={{ kube.cert_dir }}/etcd-key.pem
+    - --peer-trusted-ca-file={{ kube.cert_dir }}/ca.pem
+    - --trusted-ca-file={{ kube.cert_dir }}/ca.pem
     - --snapshot-count=10000
-    - --trusted-ca-file=/etc/kubernetes/pki/ca.pem
     image: {{ etcd_image }}
     imagePullPolicy: IfNotPresent
     livenessProbe:
@@ -45,8 +45,8 @@ spec:
         command:
         - /bin/sh
         - -ec
-        - ETCDCTL_API=3 etcdctl --endpoints={{ etcd_advertise_client_urls }} --cacert=/etc/kubernetes/pki/ca.pem
-          --cert=/etc/kubernetes/pki/etcd.pem --key=/etc/kubernetes/pki/etcd-key.pem
+        - ETCDCTL_API=3 etcdctl --endpoints={{ etcd_advertise_client_urls }} --cacert={{ kube.cert_dir }}/ca.pem
+          --cert={{ kube.cert_dir }}/etcd.pem --key={{ kube.cert_dir }}/etcd-key.pem
           get foo
       failureThreshold: 8
       initialDelaySeconds: 15
@@ -54,18 +54,18 @@ spec:
     name: etcd
     resources: {}
     volumeMounts:
-    - mountPath: /var/lib/etcd
-      name: etcd-data
-    - mountPath: /etc/kubernetes/pki
+    - mountPath: {{ kube.cert_dir }}
       name: etcd-certs
+    - mountPath: {{ etcd.data_dir }}
+      name: etcd-data
   hostNetwork: true
   priorityClassName: system-cluster-critical
   volumes:
   - hostPath:
-      path: /etc/kubernetes/pki
+      path: {{ kube.cert_dir }}
       type: DirectoryOrCreate
     name: etcd-certs
   - hostPath:
-      path: /var/lib/etcd
+      path: {{ etcd.data_dir }}
       type: DirectoryOrCreate
     name: etcd-data
