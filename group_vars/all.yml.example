@@ -106,11 +106,20 @@ etcd_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
 etcd_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
 etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 
-#- use containerd instead of docker
+# If you have local mirror with Docker packages, you can use it for deploy
+# docker_repo: "deb [arch=amd64] http://repo.internal/docker/bionic/ ubuntu stable"
+# docker_repo_key: http://repo.internal/repo-key.asc
+#    or
+# docker_repo: "http://repo.internal/linux/centos/docker-ce.repo"
+
+# If you want to use containerd instead of docker, set "containerd.enabled" to true
 containerd:
   enabled: false
-  release_version: 1.2.2
+  version: 1.2.2
+# fetch_uri: "http://some.mirror.internal/containerd-{{ containerd.version }}.linux-amd64.tar.gz"
 
-cni_version: v0.7.4
-cni_bin_dir: /opt/cni/bin/
-cni_conf_dir: /etc/cni/net.d/
+cni:
+  version: v0.7.4
+  bin_dir: /opt/cni/bin/
+  conf_dir: /etc/cni/net.d/
+# fetch_uri: "http://some.mirror.internal/cni-plugins-amd64-{{ cni.version }}.tgz"
