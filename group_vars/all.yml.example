@@ -4,12 +4,12 @@
 kube:
   version: "v1.12.4"
   config_dir: /etc/kubernetes
-  manifests_dir: "{{ kube.config_dir }}/manifests"
-  cert_dir: "{{ kube.config_dir }}/pki"
-  addon_dir: "{{ kube.config_dir }}/addon"
+  manifests_dir: "/etc/kubernetes/manifests"
+  cert_dir: "/etc/kubernetes/pki"
+  addon_dir: "/etc/kubernetes/addon"
   master_cert_dir: /opt/kubernetes/pki
   flannel_dir: /etc/sysconfig
-  admin_config: "{{ kube.config_dir }}/kubeadminconfig"
+  admin_config: "/etc/kubernetes/kubeadminconfig"
   # Cluster service ip range
   service_subnet: 10.96.0.0/24
   # IP of default kubernetes service, it is the first IP of service network CIDR range
@@ -116,10 +116,10 @@ etcd:
 containerd:
   enabled: false
   version: 1.2.2
-# fetch_uri: "http://some.mirror.internal/containerd-{{ containerd.version }}.linux-amd64.tar.gz"
+# fetch_uri: "http://some.mirror.internal/containerd-1.2.2.linux-amd64.tar.gz"
 
 cni:
   version: v0.7.4
   bin_dir: /opt/cni/bin/
   conf_dir: /etc/cni/net.d/
-# fetch_uri: "http://some.mirror.internal/cni-plugins-amd64-{{ cni.version }}.tgz"
+# fetch_uri: "http://some.mirror.internal/cni-plugins-amd64-v0.7.4.tgz"
