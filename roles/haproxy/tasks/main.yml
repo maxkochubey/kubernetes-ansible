@@ -20,7 +20,7 @@
     daemon_reload: yes
   register: haproxy_start
 
-- name: Restat haproxy service after config change
+- name: Restart haproxy service after config change
   service:
     name: haproxy
     state: restarted
