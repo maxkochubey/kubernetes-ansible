@@ -1,14 +1,15 @@
 #- setup variable for cluster installation
-#- kubernetes dir
-kube_config_dir: /etc/kubernetes
-manifest_config_dir: /etc/kubernetes/manifests
-cert_dir: /etc/kubernetes/pki
-master_cert_dir: /opt/kubernetes/pki
-kube_addon_dir: /etc/kubernetes/addon
-flannel_dir: /etc/sysconfig
 
-#- get k8s version
-k8s_version: "v1.12.4"
+# Kubernetes cluster variables
+kube:
+  version: "v1.12.4"
+  config_dir: /etc/kubernetes
+  manifests_dir: "{{ kube.config_dir }}/manifests"
+  cert_dir: "{{ kube.config_dir }}/pki"
+  addon_dir: "{{ kube.config_dir }}/addon"
+  master_cert_dir: /opt/kubernetes/pki
+  flannel_dir: /etc/sysconfig
+  admin_config: "{{ kube.config_dir }}/kubeadminconfig"
 
 #- image and other variable
 api_image: gcr.io/google_containers/kube-apiserver-amd64:v1.12.4

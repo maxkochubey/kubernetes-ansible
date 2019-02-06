@@ -10,37 +10,37 @@
 
 - name: Create kubernetes manifest config directory
   file:
-    path: "{{ manifest_config_dir }}"
+    path: "{{ kube.manifests_dir }}"
     state: directory
   register: manifest
 
 - name: Create kubernetes config directory
   file:
-    path: "{{ kube_config_dir }}"
+    path: "{{ kube.config_dir }}"
     state: directory
   register: config_dir
 
 - name: Copy kubeadmin config file
   template:
     src: kubeadminconfig.j2
-    dest: "{{ kube_config_dir }}/kubeadminconfig"
+    dest: "{{ kube.admin_config }}"
   register: config
 
 - name: Copy kubelet config file
   template:
     src: kubelet.j2
-    dest: "{{ kube_config_dir }}/kubelet"
+    dest: "{{ kube.config_dir }}/kubelet"
   register: kubeletconfig
 
 - name: Copy kubelet.yaml
   template:
     src: kubelet.yaml.j2
-    dest: "{{ kube_config_dir }}/kubelet.yaml"
+    dest: "{{ kube.config_dir }}/kubelet.yaml"
 
 - name: Copy kubelet.conf
   template:
     src: kubelet.conf.j2
-    dest: "{{ kube_config_dir }}/kubelet.conf"
+    dest: "{{ kube.config_dir }}/kubelet.conf"
 
 - name: Copy kubectl binary and kubelet binary download script
   copy:
@@ -48,7 +48,7 @@
     dest: /opt/getkube.sh
 
 - name: Download k8s binary
-  shell: "bash /opt/getkube.sh {{ k8s_version }} NODE"
+  shell: "bash /opt/getkube.sh {{ kube.version }} NODE"
   
 - name: Create kubelet directory
   file:
