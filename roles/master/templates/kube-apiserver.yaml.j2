@@ -22,29 +22,29 @@ spec:
     - --advertise-address={{ hostvars[inventory_hostname]['ansible_' + kube_api.interface].ipv4.address }}
     - --bind-address={{ hostvars[inventory_hostname]['ansible_' + kube_api.interface].ipv4.address }}
     - --allow-privileged=true
-    - --client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --client-ca-file={{ kube.cert_dir }}/ca.pem
     - --enable-admission-plugins=NodeRestriction
     - --enable-bootstrap-token-auth=true
-    - --etcd-cafile=/etc/kubernetes/pki/ca.pem
-    - --etcd-certfile=/etc/kubernetes/pki/etcd.pem
-    - --etcd-keyfile=/etc/kubernetes/pki/etcd-key.pem
+    - --etcd-cafile={{ etcd.ssl_ca_file }}
+    - --etcd-certfile={{ etcd.ssl_cert_file }}
+    - --etcd-keyfile={{ etcd.ssl_key_file }}
     - --etcd-servers={{ etcd_cluster() }}
     - --insecure-port=0
-    - --kubelet-client-certificate=/etc/kubernetes/pki/kubelet-client.pem
-    - --kubelet-client-key=/etc/kubernetes/pki/kubelet-client-key.pem
+    - --kubelet-client-certificate={{ kube.cert_dir }}/kubelet-client.pem
+    - --kubelet-client-key={{ kube.cert_dir }}/kubelet-client-key.pem
     - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-    - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.pem
-    - --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client-key.pem
+    - --proxy-client-cert-file={{ kube.cert_dir }}/front-proxy-client.pem
+    - --proxy-client-key-file={{ kube.cert_dir }}/front-proxy-client-key.pem
     - --requestheader-allowed-names=front-proxy-client,aggregator,kube-admin,kube-apiserver
-    - --requestheader-client-ca-file=/etc/kubernetes/pki/ca.pem
+    - --requestheader-client-ca-file={{ kube.cert_dir }}/ca.pem
     - --requestheader-extra-headers-prefix=X-Remote-Extra-
     - --requestheader-group-headers=X-Remote-Group
     - --requestheader-username-headers=X-Remote-User
     - --secure-port={{ kube_api.secure_port }}
-    - --service-account-key-file=/etc/kubernetes/pki/apiserver-key.pem
-    - --tls-cert-file=/etc/kubernetes/pki/apiserver.pem
-    - --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
+    - --service-account-key-file={{ kube.cert_dir }}/apiserver-key.pem
     - --service-cluster-ip-range={{ kube.service_subnet }}
+    - --tls-cert-file={{ kube.cert_dir }}/apiserver.pem
+    - --tls-private-key-file={{ kube.cert_dir }}/apiserver-key.pem
     image: {{ api_image }}
     imagePullPolicy: IfNotPresent
     livenessProbe:
@@ -61,7 +61,7 @@ spec:
       requests:
         cpu: 250m
     volumeMounts:
-    - mountPath: /etc/kubernetes/pki
+    - mountPath: {{ kube.cert_dir }}
       name: k8s-certs
       readOnly: true
     - mountPath: /etc/ssl/certs
@@ -74,7 +74,7 @@ spec:
   priorityClassName: system-cluster-critical
   volumes:
   - hostPath:
-      path: /etc/kubernetes/pki
+      path: {{ kube.cert_dir }}
       type: DirectoryOrCreate
     name: k8s-certs
   - hostPath:
