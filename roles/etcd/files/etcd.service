@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/var/lib/etcd/
-EnvironmentFile=-/etc/etcd/etcd.conf
+WorkingDirectory={{ etcd.data_dir }}
+EnvironmentFile=-{{ etcd.conf_dir }}/etcd.conf
 User=etcd
 ExecStart=/usr/bin/etcd
 Restart=on-failure

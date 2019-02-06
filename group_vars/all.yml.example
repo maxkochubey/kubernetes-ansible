@@ -99,12 +99,12 @@ etcd:
   peer_url_scheme: https
   initial_cluster_state: new
   initial_cluster_token: etcd-k8-cluster
-  ssl_ca_file: "/etc/kubernetes/pki/ca.pem"
-  ssl_cert_file: "/etc/kubernetes/pki/etcd.pem"
-  ssl_key_file: "/etc/kubernetes/pki/etcd-key.pem"
-  ssl_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
-  ssl_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
-  ssl_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
+  ssl_ca_file: "{{ kube.cert_dir }}/ca.pem"
+  ssl_cert_file: "{{ kube.cert_dir }}/etcd.pem"
+  ssl_key_file: "{{ kube.cert_dir }}/etcd-key.pem"
+  ssl_peer_ca_file: "{{ kube.cert_dir }}/ca.pem"
+  ssl_peer_cert_file: "{{ kube.cert_dir }}/etcd.pem"
+  ssl_peer_key_file: "{{ kube.cert_dir }}/etcd-key.pem"
 
 # If you have local mirror with Docker packages, you can use it for deploy
 # docker_repo: "deb [arch=amd64] http://repo.internal/docker/bionic/ ubuntu stable"
