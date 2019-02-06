@@ -4,7 +4,7 @@ authentication:
   anonymous:
     enabled: true
   x509:
-    clientCAFile: /etc/kubernetes/pki/ca.pem
+    clientCAFile: {{ kube.cert_dir }}/ca.pem
 authorization:
   mode: AlwaysAllow
 cgroupDriver: cgroupfs
@@ -60,9 +60,9 @@ resolvConf: /etc/resolv.conf
 rotateCertificates: true
 runtimeRequestTimeout: 2m0s
 serializeImagePulls: true
-staticPodPath: /etc/kubernetes/manifests
+staticPodPath: {{ kube.manifests_dir }}
 streamingConnectionIdleTimeout: 4h0m0s
 syncFrequency: 1m0s
 volumeStatsAggPeriod: 1m0s
-clientCAFile: "/etc/kubernetes/pki/ca.pem"
+clientCAFile: "{{ kube.cert_dir }}/ca.pem"
 readOnlyPort: 10255
