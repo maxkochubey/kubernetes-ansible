@@ -4,15 +4,15 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ cni_conf_dir }}"
-    - "{{ cni_bin_dir }}"
+    - "{{ cni.conf_dir }}"
+    - "{{ cni.bin_dir }}"
 
 - name: Get cni binary
   unarchive:
-    src: "{{ cni_fetch_uri | default('https://github.com/containernetworking/plugins/releases/download/' + cni_version + '/cni-plugins-amd64-' + cni_version + '.tgz') }}"
-    dest: "{{ cni_bin_dir }}"
+    src: "{{ cni.fetch_uri | default('https://github.com/containernetworking/plugins/releases/download/' + cni.version + '/cni-plugins-amd64-' + cni.version + '.tgz') }}"
+    dest: "{{ cni.bin_dir }}"
     remote_src: yes
-    creates: "{{ cni_bin_dir }}/flannel"
+    creates: "{{ cni.bin_dir }}/flannel"
 
 - name: Load br_netfilter kernel module
   modprobe:
