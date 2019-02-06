@@ -1,20 +1,28 @@
 ---
-- name: create ssl cert dir
-  file: path={{ kube.master_cert_dir }} state=directory
+- name: Create directory for SSL certificates
+  file:
+    path: "{{ kube.master_cert_dir }}"
+    state: directory
   register: master_ssl_dir
  
-- name: copy openssl conf file to create certificate
-  template: src="openssl.conf.j2" dest={{ kube.master_cert_dir }}/openssl.conf
+- name: Copy OpenSSL config file to create certificate
+  template:
+    src: openssl.conf.j2
+    dest: "{{ kube.master_cert_dir }}/openssl.conf"
   register: ssl_config
 
-- name: copy openssl conf file to create certificate
-  template: src="openssl-etcd.conf.j2" dest={{ kube.master_cert_dir }}/openssl-etcd.conf
+- name: Copy OpenSSL config file to create certificate for etcd
+  template:
+    src: openssl-etcd.conf.j2
+    dest: "{{ kube.master_cert_dir }}/openssl-etcd.conf"
   register: ssl_config
 
-- stat: path={{ kube.master_cert_dir }}/ca-key.pem
+- name: Check if Kubernetes CA key already exists
+  stat:
+    path: "{{ kube.master_cert_dir }}/ca-key.pem"
   register: ca_key_stat
 
-- name: create kubenetes certificates
+- name: Create kubenetes certificates
   when: not ca_key_stat.stat.exists
   register: create_cert
   command: "{{ item }}"
@@ -43,12 +51,16 @@
     - "openssl req -new -key {{ kube.master_cert_dir }}/node-key.pem -out {{ kube.master_cert_dir }}/node.csr -subj '/CN=kube-node/O=system:nodes'"
     - "openssl x509 -req -in {{ kube.master_cert_dir }}/node.csr -CA {{ kube.master_cert_dir }}/ca.pem -CAkey {{ kube.master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ kube.master_cert_dir }}/node.pem -days 3666"
 
-- name: create etcd certificate
-  when: etcd_peer_url_scheme == 'https'
+- name: Check if etcd key already exists
+  stat:
+    path: "{{ kube.master_cert_dir }}/etcd-key.pem"
+  register: etcd_key_stat
+
+- name: Create etcd certificate
+  when: etcd_peer_url_scheme == 'https' and not etcd_key.stat.exists
   register: etcd_cert
   command: "{{ item }}"
   with_items:
     - "openssl genrsa -out {{ kube.master_cert_dir }}/etcd-key.pem 2048"
     - "openssl req -new -key {{ kube.master_cert_dir }}/etcd-key.pem -out {{ kube.master_cert_dir }}/etcd.csr -subj '/CN=Etcd-server' -config {{ kube.master_cert_dir }}/openssl-etcd.conf"
     - "openssl x509 -req -in {{ kube.master_cert_dir }}/etcd.csr -CA {{ kube.master_cert_dir }}/ca.pem -CAkey {{ kube.master_cert_dir }}/ca-key.pem -CAcreateserial -out {{ kube.master_cert_dir }}/etcd.pem -days 3666 -extensions v3_req -extfile {{ kube.master_cert_dir }}/openssl-etcd.conf"
-
