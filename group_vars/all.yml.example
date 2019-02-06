@@ -88,24 +88,23 @@ kube_api:
   secure_port: 6443
   url: "https://{{ keepalived.shared_ip }}"             # Should be haproxy host IP or network load balancer IP. If you use only one api server then setup its IP.
 
-#- etcd config
+# etcd config
 etcd:
   interface: "{{ ansible_default_ipv4.interface }}"
   client_port: 2379
   peer_port: 2380
-
-etcd_peers_group: etcd
-etcd_conf_dir: /etc/etcd
-etcd_initial_cluster_state: new
-etcd_initial_cluster_token: etcd-k8-cluster
-etcd_data_dir: /var/lib/etcd
-etcd_peer_url_scheme: https
-etcd_ca_file: "/etc/kubernetes/pki/ca.pem"
-etcd_cert_file: "/etc/kubernetes/pki/etcd.pem"
-etcd_key_file: "/etc/kubernetes/pki/etcd-key.pem"
-etcd_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
-etcd_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
-etcd_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
+  conf_dir: /etc/etcd
+  data_dir: /var/lib/etcd
+  peers_group: etcd
+  peer_url_scheme: https
+  initial_cluster_state: new
+  initial_cluster_token: etcd-k8-cluster
+  ssl_ca_file: "/etc/kubernetes/pki/ca.pem"
+  ssl_cert_file: "/etc/kubernetes/pki/etcd.pem"
+  ssl_key_file: "/etc/kubernetes/pki/etcd-key.pem"
+  ssl_peer_ca_file: "/etc/kubernetes/pki/ca.pem"
+  ssl_peer_cert_file: "/etc/kubernetes/pki/etcd.pem"
+  ssl_peer_key_file: "/etc/kubernetes/pki/etcd-key.pem"
 
 # If you have local mirror with Docker packages, you can use it for deploy
 # docker_repo: "deb [arch=amd64] http://repo.internal/docker/bionic/ ubuntu stable"
